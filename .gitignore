@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Solution/PublishScripts
+/Solution/TestStuffWithIoC/Properties/PublishProfiles
+/Solution/TestStuffWithIoC/__TestProfilesForFilePreview__
+test.html
+/Solution/*.suo
+/Solution/*.user
