@@ -1,0 +1,70 @@
+﻿@import "elements.less";
+/* elements.less documentation: http://www.lesselements.com/ */
+
+@bodyBackground: #eeeeee;
+@defaultFont: Verdana, Arial;
+@headingFont: Arial;
+
+body {
+    font-family: @defaultFont;
+    font-size: 0.9em;
+    .bw-gradient(#eeeeee, 0,255);/*background: @bodyBackground;*/
+    margin:0;
+}
+
+#top-container {
+    width: 100%;
+    height: 10em;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-left: 2.2em;
+    background: #a7100c;
+    z-index: 1000;
+    color: white;
+}
+#hitCounterOutput {
+    color: yellow;
+}
+#main-body {
+    position: relative;
+    min-height: 35em;
+    border: 0.1em solid darkgray;
+    padding: 0.2em;
+    margin: 10em 2em 0 2em;
+    background-color: white;
+}
+
+#MyColumn2 {
+    position: absolute;
+    top: 0.3em;
+    right: 1em;
+    width: 15em;
+    border: 0.2em dotted red;
+    background-color: #FFD6D6;
+    padding: 0.4em;
+    .rounded(6px);
+}
+
+h1 {
+    font-family: @headingFont;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+h2 {
+    font-family: @headingFont;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+h1 a{
+    color:white;
+    text-decoration:none;
+}
+
+ul{
+    margin:0;
+}
+li{
+    margin-bottom:1.2em;
+}

@@ -1,0 +1,37 @@
+﻿@model TestStuffWithIoC.Models.Eniro.EniroViewModel
+
+<h2>Eniro API call: @Html.DisplayFor(model => model.Title)</h2>
+
+@using (Html.BeginForm("FormPosted", "Eniro"))
+{
+    @Html.Label("Company name in Stockholm:")
+    @Html.TextBoxFor(model => model.SearchPhrase)
+    <input type="submit" value="Search in Eniro"/>
+}
+
+<p>
+    @Html.DisplayFor(model => model.Description)
+</p>
+
+<ul>
+    @if (Model.ResponseObject != null && Model.ResponseObject.Adverts.Any())
+    {
+        foreach (var eniroAdvert in Model.ResponseObject.Adverts)
+         {
+             <li>
+                 <b>@eniroAdvert.CompanyInfo.CompanyName, OrgNr: @eniroAdvert.CompanyInfo.OrgNumber</b>
+                 <br />
+                 <i>@eniroAdvert.CompanyInfo.CompanyText</i>
+             </li>
+         }
+    }
+</ul>
+
+@section MyColumn2{
+    <div>
+        This page is going to list result from a Eniro API call.<br/>
+        It is using RestSharp library from <a href="http://restsharp.org" target="_blank">http://restsharp.org</a><br />
+        Example also with HttpClient.ContinueWith() <br />
+        @Html.ActionLink("Back to first page", "Index", "Home")
+    </div>
+}
