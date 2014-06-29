@@ -8,3 +8,4 @@
 test.html
 /Solution/*.suo
 /Solution/*.user
+/Solution/TestStuffWithIoC/bin
