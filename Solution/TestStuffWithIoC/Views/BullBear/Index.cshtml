@@ -10,6 +10,7 @@
     var allowedKeyStrokesList = [38, 40]; //Up/down arrows
     var canvasWidth = 800;
     var canvasHeight = 480;
+    var blackImage = new Image(); // A piece of black image
     var initialBackground = new Image(); // storage for new background piece
     var oldBack = new Image(); // storage for old background piece
     var player = new Image(); // player
@@ -18,17 +19,20 @@
     var playerY = 0; // current player position Y
     var oldPlayerX = 0; // old player position Y
     var oldPlayerY = 0; // old player position Y
-    var amountOfTotalMarkers = 50;
+    var amountOfTotalMarkers = 100; //Use even value, not an odd value
     var markersArray = [];
+    var movingMarkerStepValue = 2; //How much pixels the markers should move to the left each time
 
     //jQuery objects
     var $canvas;
     var $gameInfo;
 
     //Custom objects
-    var Marker = function (x, y, type, fillStyle) {
+    var Marker = function(x, y, type, fillStyle) {
         this.x = x;
         this.y = y;
+        this.prevX = -1;
+        this.prevY = -1;
         this.fillStyle = fillStyle;
         this.type = type;
     }
@@ -38,8 +42,7 @@
         $canvas.height = canvasHeight;
 
         // Make sure you got it.
-        if ($canvas.getContext)
-        {
+        if ($canvas.getContext) {
             // Specify 2d canvas type.
             ctx = $canvas.getContext("2d");
 
@@ -49,10 +52,11 @@
             ctx.fill();
 
             // Save the initial background.
-            initialBackground = ctx.getImageData(0, 0, playerWidthHeight, playerWidthHeight);
+            blackImage = ctx.getImageData(0, 0, playerWidthHeight, playerWidthHeight);
+            oldBack = blackImage;
+            initialBackground = blackImage;
 
-            //Fill markers array
-            initMarkers();
+            addTwoMarkers();
 
             // Paint the starfield.
             makeMarkers();
@@ -69,30 +73,27 @@
 
     }
 
+    function addTwoMarkers() {
+        //Make one marker of each type
+        var decreasePositionValue = 0; //To spread markers a bit in to the left of the game board
+        decreasePositionValue = Math.floor((Math.random() * canvasWidth) + 1);
+        markersArray.push(new Marker(canvasWidth - decreasePositionValue, Math.floor(Math.random() * canvasHeight), "up", "rgb(51, 190, 0)"));
 
-    function initMarkers() {
-        var markerType = "up";
-        var tmpFillStyle = "rgb(51, 190, 0)";
-        for (var i = 1; i <= amountOfTotalMarkers; i++) {
-            if (i > amountOfTotalMarkers / 2) {
-                markerType = "down";
-                tmpFillStyle = "rgb(255, 0, 0)";
-            }
-            //console.log('Doing ' + i + ' with ' + markerType + ' and ' + tmpFillStyle);
-            // Get random positions for markers.
-            var x = Math.floor(Math.random() * canvasWidth);
-            var y = Math.floor(Math.random() * canvasHeight);
-            var tmpMarker = new Marker(x, y, markerType, tmpFillStyle);
-            markersArray.push(tmpMarker);
-        }
+        decreasePositionValue = Math.floor((Math.random() * canvasWidth) + 1);
+        markersArray.push(new Marker(canvasWidth - decreasePositionValue, Math.floor(Math.random() * canvasHeight), "down", "rgb(255, 0, 0)"));
     }
 
     // Paint a random starfield.
     function makeMarkers() {
-
         // Draw 25 markers.
-        $.each(markersArray, function (index, markerObject) {
+        $.each(markersArray, function(index, markerObject) {
             //console.log(markerObject);
+            
+            //Make previous position of marker black again
+            if (markerObject.prevX != -1 && markerObject.prevY != -1) {
+                ctx.putImageData(blackImage, markerObject.prevX - (playerWidthHeight/2), markerObject.prevY - (playerWidthHeight/2));
+            }
+            
             // Make the markers green
             ctx.fillStyle = markerObject.fillStyle;
 
@@ -104,10 +105,29 @@
             ctx.arc(markerObject.x, markerObject.y, 3, 0, Math.PI * 2, true);
             ctx.closePath();
             ctx.fill();
-
-            // Save black background.
-            oldBack = ctx.getImageData(0, 0, playerWidthHeight, playerWidthHeight);
         });
+    }
+
+    function moveMarkers() {
+        //console.log(markersArray);
+        //Move all markers one step to the left on the game board
+        $.each(markersArray, function (index, markerObject) {
+            markersArray[index].prevX = markerObject.x;
+            markersArray[index].prevY = markerObject.y;
+            markersArray[index].x = markersArray[index].x - movingMarkerStepValue;
+            //If moving out of game board, RE-USE marker and start it from right side again with new y value
+            if (markersArray[index].x <= 0) {
+                markersArray[index].x = canvasWidth;
+                markersArray[index].y = Math.floor(Math.random() * canvasHeight); //Set a new random y value on it
+            }
+        });
+
+        if (markersArray.length < amountOfTotalMarkers) {
+            addTwoMarkers();
+        }
+        
+        //TODO: Call makeMarkers() and redraw all markers
+        makeMarkers();
     }
 
     function makePlayer() {
@@ -143,6 +163,7 @@
     }
 
     function doGameLoop() {
+        moveMarkers();
 
         // Put old background down to erase player.
         ctx.putImageData(oldBack, oldPlayerX, oldPlayerY);
