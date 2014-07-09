@@ -10,7 +10,7 @@
     var ctx; // context
     var allowedKeyStrokesList = [38, 40]; //Up/down arrows
     var canvasWidth = 800;
-    var canvasHeight = 450;
+    var canvasHeight = 480;
     var initialBackground = new Image(); // storage for new background piece
     var oldBack = new Image(); // storage for old background piece
     var player = new Image(); // player
@@ -50,7 +50,7 @@
         }
 
         // Play the game until the until the game is over.
-        gameLoop = setInterval(doGameLoop, 16);
+        var gameLoop = setInterval(doGameLoop, 16);
 
         // Add keyboard listener.
         window.addEventListener('keydown', whatKey, true);
@@ -61,7 +61,7 @@
     function makeMarkers(fillStyle) {
 
         // Draw 25 markers.
-        for (i = 0; i <= 25; i++) {
+        for (var i = 0; i <= 25; i++) {
             // Get random positions for markers.
             var x = Math.floor(Math.random() * canvasWidth);
             var y = Math.floor(Math.random() * canvasHeight);
