@@ -6,6 +6,8 @@
 <canvas id="gameCanvas"></canvas>
 
 <script type="text/javascript">
+    var CONST_UP = "up";
+    var CONST_DOWN = "down";
     var ctx; // context
     var allowedKeyStrokesList = [38, 40]; //Up/down arrows
     var canvasWidth = 800;
@@ -22,6 +24,7 @@
     var amountOfTotalMarkers = 100; //Use even value, not an odd value
     var markersArray = [];
     var movingMarkerStepValue = 2; //How much pixels the markers should move to the left each time
+    var bullHits = 0;
 
     //jQuery objects
     var $canvas;
@@ -80,10 +83,10 @@
         //Make one marker of each type
         var decreasePositionValue = 0; //To spread markers a bit in to the left of the game board
         decreasePositionValue = getRandomValue(canvasWidth);
-        markersArray.push(new Marker(canvasWidth - decreasePositionValue, getRandomValue(canvasHeight), "up", "rgb(51, 190, 0)"));
+        markersArray.push(new Marker(canvasWidth - decreasePositionValue, getRandomValue(canvasHeight), CONST_UP, "rgb(51, 190, 0)"));
 
         decreasePositionValue = getRandomValue(canvasWidth);
-        markersArray.push(new Marker(canvasWidth - decreasePositionValue, getRandomValue(canvasHeight), "down", "rgb(255, 0, 0)"));
+        markersArray.push(new Marker(canvasWidth - decreasePositionValue, getRandomValue(canvasHeight), CONST_DOWN, "rgb(255, 0, 0)"));
     }
 
     // Paint a random starfield.
@@ -169,7 +172,14 @@
 
         // Put player in new position.
         ctx.putImageData(player, playerX, playerY);
-        $gameInfo.text('Player1(X:' + playerX + ', Y:' + playerY + ')');
+        var bullMarkerHits = $.grep(markersArray, function(obj) {
+            return obj.type == CONST_UP && obj.x >= playerX && obj.x <= playerX + playerWidthHeight && obj.y >= playerY && obj.y <= playerY + playerWidthHeight;
+        });
+        var bullMarkerLoss = $.grep(markersArray, function (obj) {
+            return obj.type == CONST_DOWN && obj.x >= playerX && obj.x <= playerX + playerWidthHeight && obj.y >= playerY && obj.y <= playerY + playerWidthHeight;
+        });
+        bullHits += bullMarkerHits.length - bullMarkerLoss.length;
+        $gameInfo.html('<span class="strong-message">Total hits: ' + bullHits + '!</span>');
     }
 
     // Get key press.
