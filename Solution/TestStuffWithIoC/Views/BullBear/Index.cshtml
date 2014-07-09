@@ -6,7 +6,6 @@
 <canvas id="gameCanvas"></canvas>
 
 <script type="text/javascript">
-    var canvas; // canvas
     var ctx; // context
     var allowedKeyStrokesList = [38, 40]; //Up/down arrows
     var canvasWidth = 800;
@@ -19,19 +18,30 @@
     var playerY = 0; // current player position Y
     var oldPlayerX = 0; // old player position Y
     var oldPlayerY = 0; // old player position Y
+    var amountOfTotalMarkers = 50;
+    var markersArray = [];
+
+    //jQuery objects
+    var $canvas;
+    var $gameInfo;
+
+    //Custom objects
+    var Marker = function (x, y, type, fillStyle) {
+        this.x = x;
+        this.y = y;
+        this.fillStyle = fillStyle;
+        this.type = type;
+    }
 
     function initGame() {
-
-        // Get the canvas element.
-        canvas = $("#gameCanvas")[0];
-        canvas.width = canvasWidth;
-        canvas.height = canvasHeight;
+        $canvas.width = canvasWidth;
+        $canvas.height = canvasHeight;
 
         // Make sure you got it.
-        if (canvas.getContext)
+        if ($canvas.getContext)
         {
             // Specify 2d canvas type.
-            ctx = canvas.getContext("2d");
+            ctx = $canvas.getContext("2d");
 
             // Paint it black.
             ctx.fillStyle = "black";
@@ -41,9 +51,11 @@
             // Save the initial background.
             initialBackground = ctx.getImageData(0, 0, playerWidthHeight, playerWidthHeight);
 
+            //Fill markers array
+            initMarkers();
+
             // Paint the starfield.
-            makeMarkers("rgb(51, 190, 0)");
-            makeMarkers("rgb(255, 0, 0)");
+            makeMarkers();
 
             // Draw player.
             makePlayer();
@@ -57,30 +69,45 @@
 
     }
 
-    // Paint a random starfield.
-    function makeMarkers(fillStyle) {
 
-        // Draw 25 markers.
-        for (var i = 0; i <= 25; i++) {
+    function initMarkers() {
+        var markerType = "up";
+        var tmpFillStyle = "rgb(51, 190, 0)";
+        for (var i = 1; i <= amountOfTotalMarkers; i++) {
+            if (i > amountOfTotalMarkers / 2) {
+                markerType = "down";
+                tmpFillStyle = "rgb(255, 0, 0)";
+            }
+            //console.log('Doing ' + i + ' with ' + markerType + ' and ' + tmpFillStyle);
             // Get random positions for markers.
             var x = Math.floor(Math.random() * canvasWidth);
             var y = Math.floor(Math.random() * canvasHeight);
+            var tmpMarker = new Marker(x, y, markerType, tmpFillStyle);
+            markersArray.push(tmpMarker);
+        }
+    }
 
+    // Paint a random starfield.
+    function makeMarkers() {
+
+        // Draw 25 markers.
+        $.each(markersArray, function (index, markerObject) {
+            //console.log(markerObject);
             // Make the markers green
-            ctx.fillStyle = fillStyle;
+            ctx.fillStyle = markerObject.fillStyle;
 
             // Give the player some room by painting black marker.
-            if (x < playerWidthHeight && y < playerWidthHeight) ctx.fillStyle = "black";
+            if (markerObject.x < playerWidthHeight && markerObject.y < playerWidthHeight) ctx.fillStyle = "black";
 
             // Draw an individual star.
             ctx.beginPath();
-            ctx.arc(x, y, 3, 0, Math.PI * 2, true);
+            ctx.arc(markerObject.x, markerObject.y, 3, 0, Math.PI * 2, true);
             ctx.closePath();
             ctx.fill();
 
             // Save black background.
             oldBack = ctx.getImageData(0, 0, playerWidthHeight, playerWidthHeight);
-        }
+        });
     }
 
     function makePlayer() {
@@ -122,7 +149,7 @@
 
         // Put player in new position.
         ctx.putImageData(player, playerX, playerY);
-
+        $gameInfo.text('Player1(X:' + playerX + ', Y:' + playerY + ')');
     }
 
     // Get key press.
@@ -138,24 +165,24 @@
 
             switch (evt.keyCode) {
                 //Down arrow
-                case 40:
-                    playerY = playerY + playerWidthHeight;
-                    if (playerY > canvasHeight - playerWidthHeight) {
-                        // If at edge, reset player position and set flag.
-                        playerY = canvasHeight - playerWidthHeight;
-                        flag = 1;
-                    }
-                    break;
+            case 40:
+                playerY = playerY + playerWidthHeight;
+                if (playerY > canvasHeight - playerWidthHeight) {
+                    // If at edge, reset player position and set flag.
+                    playerY = canvasHeight - playerWidthHeight;
+                    flag = 1;
+                }
+                break;
 
-                //Up arrow 
-                case 38:
-                    playerY = playerY - playerWidthHeight;
-                    if (playerY < 0) {
-                        // If at edge, reset player position and set flag.
-                        playerY = 0;
-                        flag = 1;
-                    }
-                    break;
+            //Up arrow 
+            case 38:
+                playerY = playerY - playerWidthHeight;
+                if (playerY < 0) {
+                    // If at edge, reset player position and set flag.
+                    playerY = 0;
+                    flag = 1;
+                }
+                break;
 
             }
         
@@ -175,6 +202,9 @@
     }
 
     $(document).ready(function () {
+        $canvas = $("#gameCanvas")[0];
+        $gameInfo = $('#gameInfo');
+
         initGame();
     });
 </script>
@@ -182,6 +212,7 @@
 
     @section MyColumn2{
         <div>
-            Bull & Bear Game
+            <b>Bull & Bear Game</b>
+            <div id="gameInfo">Per</div>
         </div>
     }
