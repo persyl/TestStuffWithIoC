@@ -9,3 +9,6 @@ test.html
 /Solution/*.suo
 /Solution/*.user
 /Solution/TestStuffWithIoC/bin
+/Solution/TestStuffWithIoC/obj
+/Solution/UnitTests/bin
+/Solution/UnitTests/obj
