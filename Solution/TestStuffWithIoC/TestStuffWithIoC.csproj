@@ -167,6 +167,7 @@
     <Compile Include="App_Start\StructuremapMvc.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\ApiCallerController.cs" />
+    <Compile Include="Controllers\BullBearController.cs" />
     <Compile Include="Controllers\EniroController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DependencyResolution\IoC.cs" />
@@ -195,6 +196,7 @@
     <None Include="static\styles.less" />
     <Content Include="Views\ApiCaller\Index.cshtml" />
     <Content Include="Views\Eniro\Index.cshtml" />
+    <Content Include="Views\BullBear\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
