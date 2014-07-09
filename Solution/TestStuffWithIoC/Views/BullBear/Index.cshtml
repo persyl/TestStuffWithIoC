@@ -3,7 +3,15 @@
 }
 
 <!-- HTML5 IDEA -->
-<canvas id="gameCanvas"></canvas>
+<table>
+    <tr>
+        <td><canvas id="gameCanvas"></canvas></td>
+        <td style="vertical-align: top">
+            <label for="movingMarkerStepValue">Speed of markers</label><br />
+            <input id="movingMarkerStepValue" type="text" value="3" onkeyup="movingMarkerStepValue = this.value" />
+        </td>
+    </tr>
+</table>
 
 <script type="text/javascript">
     var CONST_UP = "up";
@@ -21,9 +29,10 @@
     var playerY = 0; // current player position Y
     var oldPlayerX = 0; // old player position Y
     var oldPlayerY = 0; // old player position Y
-    var amountOfTotalMarkers = 100; //Use even value, not an odd value
+    var amountOfTotalMarkers = 10; //Use even value, not an odd value
     var markersArray = [];
-    var movingMarkerStepValue = 2; //How much pixels the markers should move to the left each time
+    var movingMarkerStepValue = 3; //How much pixels the markers should move to the left each time
+    var markerRadius = 4;
     var bullHits = 0;
 
     //jQuery objects
@@ -59,7 +68,9 @@
             oldBack = blackImage;
             initialBackground = blackImage;
 
-            addTwoMarkers();
+            //Make one marker of each type
+            addOneMarker(CONST_UP);
+            addOneMarker(CONST_DOWN);
 
             // Paint the starfield.
             makeMarkers();
@@ -79,14 +90,12 @@
         return Math.floor((Math.random() * limit) + 1);
     }
 
-    function addTwoMarkers() {
-        //Make one marker of each type
+    function addOneMarker(markerType) {
+        if (markerType != CONST_UP) markerType = CONST_DOWN; //Make sure to use the constant values
+        var fillStyle = markerType == CONST_UP ? "rgb(51, 190, 0)" : "rgb(255, 0, 0)";
         var decreasePositionValue = 0; //To spread markers a bit in to the left of the game board
         decreasePositionValue = getRandomValue(canvasWidth);
-        markersArray.push(new Marker(canvasWidth - decreasePositionValue, getRandomValue(canvasHeight), CONST_UP, "rgb(51, 190, 0)"));
-
-        decreasePositionValue = getRandomValue(canvasWidth);
-        markersArray.push(new Marker(canvasWidth - decreasePositionValue, getRandomValue(canvasHeight), CONST_DOWN, "rgb(255, 0, 0)"));
+        markersArray.push(new Marker(canvasWidth - decreasePositionValue, getRandomValue(canvasHeight), markerType, fillStyle));
     }
 
     // Paint a random starfield.
@@ -106,16 +115,15 @@
             // Give the player some room by painting black marker.
             if (markerObject.x < playerWidthHeight && markerObject.y < playerWidthHeight) ctx.fillStyle = "black";
 
-            // Draw an individual star.
+            // Draw an individual marker.
             ctx.beginPath();
-            ctx.arc(markerObject.x, markerObject.y, 3, 0, Math.PI * 2, true);
+            ctx.arc(markerObject.x, markerObject.y, markerRadius, 0, Math.PI * 2);
             ctx.closePath();
             ctx.fill();
         });
     }
 
     function moveMarkers() {
-        //console.log(markersArray);
         //Move all markers one step to the left on the game board
         $.each(markersArray, function (index, markerObject) {
             markersArray[index].prevX = markerObject.x;
@@ -129,7 +137,9 @@
         });
 
         if (markersArray.length < amountOfTotalMarkers) {
-            addTwoMarkers();
+            //Make one marker of each type
+            addOneMarker(CONST_UP);
+            addOneMarker(CONST_DOWN);
         }
         
         //TODO: Call makeMarkers() and redraw all markers
@@ -172,11 +182,24 @@
 
         // Put player in new position.
         ctx.putImageData(player, playerX, playerY);
-        var bullMarkerHits = $.grep(markersArray, function(obj) {
-            return obj.type == CONST_UP && obj.x >= playerX && obj.x <= playerX + playerWidthHeight && obj.y >= playerY && obj.y <= playerY + playerWidthHeight;
+        var bullMarkerHits = $.grep(markersArray, function (obj, markersArrayIndex) {
+            var returnValue = obj.type == CONST_UP && obj.x >= playerX && obj.x <= playerX + playerWidthHeight && obj.y >= playerY && obj.y <= playerY + playerWidthHeight;
+            if (returnValue) {
+                markersArray.splice(markersArrayIndex, 1); //Remove this marker completely from markersArray as it have been "eaten"
+                addOneMarker(obj.type); //Add a new one of same type
+                ctx.putImageData(blackImage, obj.x - markerRadius, obj.y - markerRadius); //Make position black of where the marker was
+            }
+            return returnValue;
         });
-        var bullMarkerLoss = $.grep(markersArray, function (obj) {
-            return obj.type == CONST_DOWN && obj.x >= playerX && obj.x <= playerX + playerWidthHeight && obj.y >= playerY && obj.y <= playerY + playerWidthHeight;
+        
+        var bullMarkerLoss = $.grep(markersArray, function (obj, markersArrayIndex) {
+            var returnValue = obj.type == CONST_DOWN && obj.x >= playerX && obj.x <= playerX + playerWidthHeight && obj.y >= playerY && obj.y <= playerY + playerWidthHeight;
+            if (returnValue) {
+                markersArray.splice(markersArrayIndex, 1); //Remove this marker completely from markersArray as it have been "eaten"
+                addOneMarker(obj.type); //Add a new one of same type
+                ctx.putImageData(blackImage, obj.x - markerRadius, obj.y - markerRadius); //Make position black of where the marker was
+            }
+            return returnValue;
         });
         bullHits += bullMarkerHits.length - bullMarkerLoss.length;
         $gameInfo.html('<span class="strong-message">Total hits: ' + bullHits + '!</span>');
