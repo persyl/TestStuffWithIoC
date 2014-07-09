@@ -65,7 +65,6 @@
             makePlayer();
         }
 
-        // Play the game until the until the game is over.
         var gameLoop = setInterval(doGameLoop, 16);
 
         // Add keyboard listener.
@@ -73,14 +72,18 @@
 
     }
 
+    function getRandomValue(limit) {
+        return Math.floor((Math.random() * limit) + 1);
+    }
+
     function addTwoMarkers() {
         //Make one marker of each type
         var decreasePositionValue = 0; //To spread markers a bit in to the left of the game board
-        decreasePositionValue = Math.floor((Math.random() * canvasWidth) + 1);
-        markersArray.push(new Marker(canvasWidth - decreasePositionValue, Math.floor(Math.random() * canvasHeight), "up", "rgb(51, 190, 0)"));
+        decreasePositionValue = getRandomValue(canvasWidth);
+        markersArray.push(new Marker(canvasWidth - decreasePositionValue, getRandomValue(canvasHeight), "up", "rgb(51, 190, 0)"));
 
-        decreasePositionValue = Math.floor((Math.random() * canvasWidth) + 1);
-        markersArray.push(new Marker(canvasWidth - decreasePositionValue, Math.floor(Math.random() * canvasHeight), "down", "rgb(255, 0, 0)"));
+        decreasePositionValue = getRandomValue(canvasWidth);
+        markersArray.push(new Marker(canvasWidth - decreasePositionValue, getRandomValue(canvasHeight), "down", "rgb(255, 0, 0)"));
     }
 
     // Paint a random starfield.
@@ -118,7 +121,7 @@
             //If moving out of game board, RE-USE marker and start it from right side again with new y value
             if (markersArray[index].x <= 0) {
                 markersArray[index].x = canvasWidth;
-                markersArray[index].y = Math.floor(Math.random() * canvasHeight); //Set a new random y value on it
+                markersArray[index].y = getRandomValue(canvasHeight); //Set a new random y value on it
             }
         });
 
@@ -132,33 +135,29 @@
 
     function makePlayer() {
 
-        // Draw saucer bottom.
+        //Draw Bull
         ctx.beginPath();
-        ctx.moveTo(28.4, 16.9);
-        ctx.bezierCurveTo(28.4, 19.7, 22.9, 22.0, 16.0, 22.0);
-        ctx.bezierCurveTo(9.1, 22.0, 3.6, 19.7, 3.6, 16.9);
-        ctx.bezierCurveTo(3.6, 14.1, 9.1, 11.8, 16.0, 11.8);
-        ctx.bezierCurveTo(22.9, 11.8, 28.4, 14.1, 28.4, 16.9);
+        ctx.rect(0, 0, 30, 30);
+        ctx.closePath();
+        ctx.fillStyle = "grey";
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(0, 15);
+        ctx.bezierCurveTo(0, -4, 30, -4, 30, 15);
+        ctx.moveTo(0, 15);
+        ctx.bezierCurveTo(0, 34, 30, 34, 30, 15);
+        //ctx.bezierCurveTo(3.6, 14.1, 9.1, 11.8, 16.0, 11.8);
+        //ctx.bezierCurveTo(22.9, 11.8, 28.4, 14.1, 28.4, 16.9);
         ctx.closePath();
         ctx.fillStyle = "rgb(222, 103, 0)";
         ctx.fill();
-
-        // Draw saucer top.
-        ctx.beginPath();
-        ctx.moveTo(22.3, 12.0);
-        ctx.bezierCurveTo(22.3, 13.3, 19.4, 14.3, 15.9, 14.3);
-        ctx.bezierCurveTo(12.4, 14.3, 9.6, 13.3, 9.6, 12.0);
-        ctx.bezierCurveTo(9.6, 10.8, 12.4, 9.7, 15.9, 9.7);
-        ctx.bezierCurveTo(19.4, 9.7, 22.3, 10.8, 22.3, 12.0);
-        ctx.closePath();
-        ctx.fillStyle = "rgb(51, 190, 0)";
-        ctx.fill();
-
+        
         // Save player data.
         player = ctx.getImageData(0, 0, playerWidthHeight, playerWidthHeight);
 
         // Erase it for now.
-        ctx.putImageData(oldBack, 0, 0);
+        ctx.putImageData(blackImage, 0, 0); //oldBack
 
     }
 
@@ -166,7 +165,7 @@
         moveMarkers();
 
         // Put old background down to erase player.
-        ctx.putImageData(oldBack, oldPlayerX, oldPlayerY);
+        ctx.putImageData(blackImage, oldPlayerX, oldPlayerY);
 
         // Put player in new position.
         ctx.putImageData(player, playerX, playerY);
