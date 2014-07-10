@@ -16,6 +16,7 @@
 <script type="text/javascript">
     var CONST_UP = "up";
     var CONST_DOWN = "down";
+    var gameLoop;
     var ctx; // context
     var allowedKeyStrokesList = [38, 40]; //Up/down arrows
     var canvasWidth = 800;
@@ -34,6 +35,15 @@
     var movingMarkerStepValue = 3; //How much pixels the markers should move to the left each time
     var markerRadius = 4;
     var bullHits = 0;
+
+    //Index curve
+    var indexPoints = [];
+    var currentIndexPoint = 1;
+    var indexSpeed = 2;
+    var indexTargetX = 0;
+    var indexTargetY = 0;
+    var indexX = 0;
+    var indexY = 0;
 
     //jQuery objects
     var $canvas;
@@ -71,19 +81,33 @@
             //Make one marker of each type
             addOneMarker(CONST_UP);
             addOneMarker(CONST_DOWN);
+            initIndexCurve();
 
-            // Paint the starfield.
-            makeMarkers();
-
-            // Draw player.
-            makePlayer();
+            drawMarkers();
+            drawPlayer();
+            drawIndexCurve();
         }
 
-        var gameLoop = setInterval(doGameLoop, 16);
+        gameLoop = setInterval(doGameLoop, 16);
 
         // Add keyboard listener.
         window.addEventListener('keydown', whatKey, true);
 
+    }
+
+    function initIndexCurve() {
+        // Add some indexpoints
+        for (var i = 0; i < 50; i++) {
+            indexPoints.push({
+                x: i * (canvasWidth / 50),
+                y: (canvasHeight/2) + Math.sin(i) * 10
+            });
+        }
+        // Set the initial target and starting point
+        indexTargetX = indexPoints[1].x;
+        indexTargetY = indexPoints[1].y;
+        indexX = indexPoints[0].x;
+        indexY = indexPoints[0].y;
     }
 
     function getRandomValue(limit) {
@@ -99,7 +123,7 @@
     }
 
     // Paint a random starfield.
-    function makeMarkers() {
+    function drawMarkers() {
         // Draw 25 markers.
         $.each(markersArray, function(index, markerObject) {
             //console.log(markerObject);
@@ -142,11 +166,10 @@
             addOneMarker(CONST_DOWN);
         }
         
-        //TODO: Call makeMarkers() and redraw all markers
-        makeMarkers();
+        drawMarkers();
     }
 
-    function makePlayer() {
+    function drawPlayer() {
 
         //Draw Bull
         ctx.beginPath();
@@ -252,6 +275,55 @@
                 initialBackground = ctx.getImageData(playerX, playerY, playerWidthHeight, playerWidthHeight);
             }
         }
+    }
+
+    window.requestAnimFrame = (function () {
+        return window.requestAnimationFrame ||
+                window.webkitRequestAnimationFrame ||
+                window.mozRequestAnimationFrame ||
+                window.oRequestAnimationFrame ||
+                window.msRequestAnimationFrame ||
+                function (callback) {
+                    window.setTimeout(callback, 1000 / 60);
+                };
+    })();
+
+    function drawIndexCurve() {
+        var tx = indexTargetX - indexX,
+            ty = indexTargetY - indexY,
+            dist = Math.sqrt(tx * tx + ty * ty),
+            velX = (tx / dist) * indexSpeed,
+            velY = (ty / dist) * indexSpeed;
+
+        indexX += velX;
+        indexY += velY;
+
+        if (dist < 1) {
+            currentIndexPoint++;
+
+            if (currentIndexPoint >= indexPoints.length) {
+                currentIndexPoint = 1;
+                indexX = indexPoints[0].x;
+                indexY = indexPoints[0].y;
+            }
+
+            indexTargetX = indexPoints[currentIndexPoint].x;
+            indexTargetY = indexPoints[currentIndexPoint].y;
+        }
+
+        //ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        ctx.beginPath();
+        ctx.moveTo(indexPoints[0].x, indexPoints[0].y);
+        ctx.lineWidth = 0.1;
+        ctx.strokeStyle = '#FFEA00';
+        //ctx.fillStyle = '#2068A8';
+
+        for (var p = 0; p < currentIndexPoint - 1; p++) {
+            ctx.lineTo(indexPoints[p].x, indexPoints[p].y);
+        }
+        ctx.lineTo(indexX, indexY);
+        ctx.stroke();
+        requestAnimFrame(drawIndexCurve);
     }
 
     $(document).ready(function () {
