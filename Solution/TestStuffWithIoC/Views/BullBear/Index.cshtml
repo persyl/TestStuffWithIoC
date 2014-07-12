@@ -427,7 +427,8 @@
 
         initCanvas();
 
-        $('#MyColumn2').attr('style', 'top:5px;left:' + (canvasWidth - 220) + 'px;right:auto;');
+        $("#MyColumn2").draggable();
+        $('#MyColumn2').attr('style', 'cursor:move;top:5px;left:' + (canvasWidth - 220) + 'px;right:auto;');
 
         //Increase game speed gradually
         setInterval(function() {
@@ -439,12 +440,12 @@
 
 
     @section MyColumn2{
-        <div>
-            <b>Bull & Bear Game</b>
-            <div id="gameInfo"></div>
-            <br />
-            <label for="movingMarkerStepValue"><b>Game speed</b></label><br />
-            <input id="movingMarkerStepValue" size="1" type="text" onkeyup="movingMarkerStepValue = this.value" />
-            <em>Increases automatically</em>
-        </div>
+        <div class="ui-draggable">
+    <b>Bull & Bear Game</b>
+    <div id="gameInfo"></div>
+    <br />
+    <label for="movingMarkerStepValue"><b>Game speed</b></label><br />
+    <input id="movingMarkerStepValue" size="1" type="text" onkeyup="movingMarkerStepValue = this.value" />
+    <em>Increases automatically</em>
+</div>
     }
