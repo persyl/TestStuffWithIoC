@@ -191,23 +191,63 @@
     function drawPlayer() {
 
         //Draw Bull
-        ctx.beginPath();
-        ctx.rect(0, 0, 30, 30);
-        ctx.closePath();
-        ctx.fillStyle = "grey";
-        ctx.fill();
+        //ctx.beginPath();
+        //ctx.rect(0, 0, 30, 30);
+        //ctx.closePath();
+        //ctx.fillStyle = "grey";
+        //ctx.fill();
 
         ctx.beginPath();
         ctx.moveTo(0, 15);
-        ctx.bezierCurveTo(0, -4, 30, -4, 30, 15);
+        ctx.bezierCurveTo(0, 0, 30, 0, 30, 15);
         ctx.moveTo(0, 15);
-        ctx.bezierCurveTo(0, 34, 30, 34, 30, 15);
-        //ctx.bezierCurveTo(3.6, 14.1, 9.1, 11.8, 16.0, 11.8);
-        //ctx.bezierCurveTo(22.9, 11.8, 28.4, 14.1, 28.4, 16.9);
+        ctx.bezierCurveTo(0, 30, 30, 30, 30, 15);
         ctx.closePath();
         ctx.fillStyle = "rgb(222, 103, 0)";
         ctx.fill();
-        
+
+        //First horn
+        ctx.beginPath();
+        ctx.strokeStyle = "#734B06";
+        ctx.lineWidth = 2;
+        var hornStartX = playerWidthHeight / 2 + (playerWidthHeight / 4);
+        var hornStartY = playerWidthHeight / 2 + 3;
+        var hornCurveX = hornStartX;
+        var hornCurveY = hornStartY + 3;
+        var hornEndX = hornStartX + 6;
+        var hornEndY = hornStartY + 6;
+        ctx.moveTo(hornStartX, hornStartY);
+        ctx.quadraticCurveTo(hornCurveX, hornCurveY, hornEndX, hornEndY);
+        ctx.stroke();
+
+        //Second horn
+        ctx.beginPath();
+        hornStartX = playerWidthHeight / 2 + (playerWidthHeight / 4);
+        hornStartY = playerWidthHeight / 2 - 3;
+        hornCurveX = hornStartX;
+        hornCurveY = hornStartY - 3;
+        hornEndX = hornStartX + 6;
+        hornEndY = hornStartY - 6;
+        ctx.moveTo(hornStartX, hornStartY);
+        ctx.quadraticCurveTo(hornCurveX, hornCurveY, hornEndX, hornEndY);
+        ctx.stroke();
+
+        //Eye 1
+        ctx.beginPath();
+        ctx.strokeStyle = "#FF0019";
+        ctx.lineWidth = 1;
+        var eyeCenterX = playerWidthHeight - 7;
+        var eyeCenterY = 11;
+        ctx.arc(eyeCenterX, eyeCenterY, 1, 0, 2 * Math.PI);
+        ctx.stroke();
+
+        //Eye 2
+        ctx.beginPath();
+        eyeCenterX = playerWidthHeight - 7;
+        eyeCenterY = 18;
+        ctx.arc(eyeCenterX, eyeCenterY, 1, 0, 2 * Math.PI);
+        ctx.stroke();
+
         // Save player data.
         player = ctx.getImageData(0, 0, playerWidthHeight, playerWidthHeight);
 
@@ -225,7 +265,7 @@
         // Put player in new position.
         ctx.putImageData(player, playerX, playerY);
         var bullMarkerHits = $.grep(markersArray, function (obj, markersArrayIndex) {
-            var returnValue = obj.type == CONST_UP && obj.x >= playerX && obj.x <= playerX + playerWidthHeight && obj.y >= playerY && obj.y <= playerY + playerWidthHeight;
+            var returnValue = obj.type == CONST_UP && isHit(obj, playerX, playerY);
             if (returnValue) {
                 markersArray.splice(markersArrayIndex, 1); //Remove this marker completely from markersArray as it have been "eaten"
                 addOneMarker(obj.type); //Add a new one of same type
@@ -236,7 +276,7 @@
         });
         
         var bullMarkerLoss = $.grep(markersArray, function (obj, markersArrayIndex) {
-            var returnValue = obj.type == CONST_DOWN && obj.x >= playerX && obj.x <= playerX + playerWidthHeight && obj.y >= playerY && obj.y <= playerY + playerWidthHeight;
+            var returnValue = obj.type == CONST_DOWN && isHit(obj, playerX, playerY);
             if (returnValue) {
                 markersArray.splice(markersArrayIndex, 1); //Remove this marker completely from markersArray as it have been "eaten"
                 addOneMarker(obj.type); //Add a new one of same type
@@ -247,6 +287,12 @@
         });
         bullHits += bullMarkerHits.length - bullMarkerLoss.length;
         $gameInfo.html('<span class="strong-message">Total hits: ' + bullHits + '!</span>');
+    }
+
+    function isHit(markerObj, playerX, playerY) {
+        var topLeftMarkerHit = markerObj.x >= playerX && markerObj.x <= playerX + playerWidthHeight && markerObj.y >= playerY && markerObj.y <= playerY + playerWidthHeight;
+        var bottomLeftMarkerHit = markerObj.x >= playerX && markerObj.x <= playerX + playerWidthHeight && markerObj.y + markerWidthHeight >= playerY && markerObj.y + markerWidthHeight <= playerY + playerWidthHeight;
+        return topLeftMarkerHit || bottomLeftMarkerHit;
     }
 
     function flashHit(markerType) {
@@ -367,7 +413,7 @@
         setInterval(function() {
             movingMarkerStepValue++;
             $('#movingMarkerStepValue').val(movingMarkerStepValue);
-        }, 10000);
+        }, 30000);
     });
 </script>
 
