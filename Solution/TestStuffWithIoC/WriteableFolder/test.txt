@@ -1,1 +1,1 @@
-2014-06-16 08:50:15 Denna fil är skriven från applikationen TestStuffWithIoC.
+2014-07-12 14:36:13 This file is written from application TestStuffWithIoC in a separate thread.
