@@ -3,15 +3,7 @@
 }
 
 <!-- HTML5 IDEA -->
-<table>
-    <tr>
-        <td><canvas id="gameCanvas"></canvas></td>
-        <td style="vertical-align: top">
-            <label for="movingMarkerStepValue">Speed of markers</label><br />
-            <input id="movingMarkerStepValue" type="text" onkeyup="movingMarkerStepValue = this.value" />
-        </td>
-    </tr>
-</table>
+<canvas id="gameCanvas"></canvas>
 
 <script type="text/javascript">
     var CONST_UP = "up";
@@ -360,7 +352,7 @@
         }
         ctx.lineTo(indexX, indexY);
         ctx.stroke();
-        requestAnimFrame(drawIndexCurve);
+        //requestAnimFrame(drawIndexCurve);
     }
 
     $(document).ready(function () {
@@ -368,6 +360,14 @@
         $gameInfo = $('#gameInfo');
         $('#movingMarkerStepValue').val(movingMarkerStepValue);
         initGame();
+
+        $('#MyColumn2').attr('style', 'top:5px;left:' + (canvasWidth - 220) + 'px;right:auto;');
+
+        //Increase game speed gradually
+        setInterval(function() {
+            movingMarkerStepValue++;
+            $('#movingMarkerStepValue').val(movingMarkerStepValue);
+        }, 10000);
     });
 </script>
 
@@ -376,5 +376,9 @@
         <div>
             <b>Bull & Bear Game</b>
             <div id="gameInfo">Per</div>
+            <br />
+            <label for="movingMarkerStepValue"><b>Game speed</b></label><br />
+            <input id="movingMarkerStepValue" size="1" type="text" onkeyup="movingMarkerStepValue = this.value" />
+            <em>Increases automatically</em>
         </div>
     }
