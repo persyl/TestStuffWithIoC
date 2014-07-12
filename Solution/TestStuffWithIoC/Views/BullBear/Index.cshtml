@@ -8,6 +8,7 @@
 <script type="text/javascript">
     var CONST_UP = "up";
     var CONST_DOWN = "down";
+    var canvasInitiated = false;
     var gameLoop;
     var ctx; // context
     var drawPositionX = 0;
@@ -54,12 +55,11 @@
         this.type = type;
     }
 
-    function initGame() {
+    function initCanvas() {
         $canvas.width = canvasWidth;
         $canvas.height = canvasHeight;
-
-        // Make sure you got it.
         if ($canvas.getContext) {
+            canvasInitiated = true;
             // Specify 2d canvas type.
             ctx = $canvas.getContext("2d");
 
@@ -74,6 +74,24 @@
             oldBack = blackImageForPlayer;
             initialBackground = blackImageForPlayer;
 
+            //
+            ctx.font = "30px Arial";
+            ctx.fillStyle = "red";
+            ctx.fillText("Bull & Bear", (canvasWidth / 2) - (canvasWidth / 6), (canvasHeight / 2) - (canvasHeight / 4));
+            ctx.fillText("by", (canvasWidth / 2) - (canvasWidth / 10), (canvasHeight / 2) - (canvasHeight / 6));
+            ctx.fillText("Per Lundkvist", (canvasWidth / 2) - (canvasWidth / 5), (canvasHeight / 2) - (canvasHeight / 10));
+
+            setTimeout(initGame, 5000);
+        }
+    }
+
+    function initGame() {
+        if (canvasInitiated) {
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight); //Clear text and paint black again
+            ctx.fillStyle = "black";
+            ctx.rect(0, 0, canvasWidth, canvasHeight);
+            ctx.fill();
+
             //Make one marker of each type
             addOneMarker(CONST_UP);
             addOneMarker(CONST_DOWN);
@@ -82,13 +100,12 @@
             drawMarkers();
             drawPlayer();
             drawIndexCurve();
+
+            gameLoop = setInterval(doGameLoop, 16);
+
+            // Add keyboard listener.
+            window.addEventListener('keydown', whatKey, true);
         }
-
-        gameLoop = setInterval(doGameLoop, 16);
-
-        // Add keyboard listener.
-        window.addEventListener('keydown', whatKey, true);
-
     }
 
     function initIndexCurve() {
@@ -405,7 +422,8 @@
         $canvas = $("#gameCanvas")[0];
         $gameInfo = $('#gameInfo');
         $('#movingMarkerStepValue').val(movingMarkerStepValue);
-        initGame();
+
+        initCanvas();
 
         $('#MyColumn2').attr('style', 'top:5px;left:' + (canvasWidth - 220) + 'px;right:auto;');
 
@@ -421,7 +439,7 @@
     @section MyColumn2{
         <div>
             <b>Bull & Bear Game</b>
-            <div id="gameInfo">Per</div>
+            <div id="gameInfo"></div>
             <br />
             <label for="movingMarkerStepValue"><b>Game speed</b></label><br />
             <input id="movingMarkerStepValue" size="1" type="text" onkeyup="movingMarkerStepValue = this.value" />
