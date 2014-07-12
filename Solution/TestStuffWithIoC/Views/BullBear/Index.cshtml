@@ -8,7 +8,7 @@
         <td><canvas id="gameCanvas"></canvas></td>
         <td style="vertical-align: top">
             <label for="movingMarkerStepValue">Speed of markers</label><br />
-            <input id="movingMarkerStepValue" type="text" value="3" onkeyup="movingMarkerStepValue = this.value" />
+            <input id="movingMarkerStepValue" type="text" onkeyup="movingMarkerStepValue = this.value" />
         </td>
     </tr>
 </table>
@@ -18,10 +18,13 @@
     var CONST_DOWN = "down";
     var gameLoop;
     var ctx; // context
+    var drawPositionX = 0;
+    var drawPositionY = 0;
     var allowedKeyStrokesList = [38, 40]; //Up/down arrows
     var canvasWidth = 800;
     var canvasHeight = 480;
-    var blackImage = new Image(); // A piece of black image
+    var blackImageForPlayer = new Image(); // A piece of black image when erasing player
+    var blackImageForMarker = new Image(); // A piece of black image when erasing marker
     var initialBackground = new Image(); // storage for new background piece
     var oldBack = new Image(); // storage for old background piece
     var player = new Image(); // player
@@ -33,7 +36,7 @@
     var amountOfTotalMarkers = 10; //Use even value, not an odd value
     var markersArray = [];
     var movingMarkerStepValue = 3; //How much pixels the markers should move to the left each time
-    var markerRadius = 4;
+    var markerWidthHeight = 20;
     var bullHits = 0;
 
     //Index curve
@@ -74,9 +77,10 @@
             ctx.fill();
 
             // Save the initial background.
-            blackImage = ctx.getImageData(0, 0, playerWidthHeight, playerWidthHeight);
-            oldBack = blackImage;
-            initialBackground = blackImage;
+            blackImageForPlayer = ctx.getImageData(0, 0, playerWidthHeight, playerWidthHeight);
+            blackImageForMarker = ctx.getImageData(0, 0, markerWidthHeight, markerWidthHeight);
+            oldBack = blackImageForPlayer;
+            initialBackground = blackImageForPlayer;
 
             //Make one marker of each type
             addOneMarker(CONST_UP);
@@ -130,18 +134,41 @@
             
             //Make previous position of marker black again
             if (markerObject.prevX != -1 && markerObject.prevY != -1) {
-                ctx.putImageData(blackImage, markerObject.prevX - (playerWidthHeight/2), markerObject.prevY - (playerWidthHeight/2));
+                ctx.putImageData(blackImageForMarker, markerObject.prevX, markerObject.prevY);
             }
             
-            // Make the markers green
+            // Set the markers color
             ctx.fillStyle = markerObject.fillStyle;
-
-            // Give the player some room by painting black marker.
-            if (markerObject.x < playerWidthHeight && markerObject.y < playerWidthHeight) ctx.fillStyle = "black";
 
             // Draw an individual marker.
             ctx.beginPath();
-            ctx.arc(markerObject.x, markerObject.y, markerRadius, 0, Math.PI * 2);
+            var halfMarkerRatio = markerWidthHeight / 2;
+            if (markerObject.type == CONST_UP) {
+                //Body of the arrow
+                ctx.rect(markerObject.x + halfMarkerRatio / 2, markerObject.y + halfMarkerRatio, halfMarkerRatio, halfMarkerRatio);
+                //Top of the arrow
+                drawPositionX = markerObject.x + halfMarkerRatio;
+                drawPositionY = markerObject.y;
+                ctx.moveTo(drawPositionX, drawPositionY);
+                drawPositionX = drawPositionX - halfMarkerRatio;
+                drawPositionY = drawPositionY + halfMarkerRatio;
+                ctx.lineTo(drawPositionX, drawPositionY);
+                drawPositionX = drawPositionX + markerWidthHeight;
+                ctx.lineTo(drawPositionX, drawPositionY);
+            } else {
+                //Body of the arrow
+                ctx.rect(markerObject.x + halfMarkerRatio / 2, markerObject.y, halfMarkerRatio, halfMarkerRatio);
+                //Bottom of the arrow
+                drawPositionX = markerObject.x;
+                drawPositionY = markerObject.y + halfMarkerRatio;
+                ctx.moveTo(drawPositionX, drawPositionY);
+                drawPositionX = drawPositionX + halfMarkerRatio;
+                drawPositionY = drawPositionY + halfMarkerRatio;
+                ctx.lineTo(drawPositionX, drawPositionY);
+                drawPositionX = drawPositionX + halfMarkerRatio;
+                drawPositionY = drawPositionY - halfMarkerRatio;
+                ctx.lineTo(drawPositionX, drawPositionY);
+            }
             ctx.closePath();
             ctx.fill();
         });
@@ -193,7 +220,7 @@
         player = ctx.getImageData(0, 0, playerWidthHeight, playerWidthHeight);
 
         // Erase it for now.
-        ctx.putImageData(blackImage, 0, 0); //oldBack
+        ctx.putImageData(blackImageForPlayer, 0, 0); //oldBack
 
     }
 
@@ -201,7 +228,7 @@
         moveMarkers();
 
         // Put old background down to erase player.
-        ctx.putImageData(blackImage, oldPlayerX, oldPlayerY);
+        ctx.putImageData(blackImageForPlayer, oldPlayerX, oldPlayerY);
 
         // Put player in new position.
         ctx.putImageData(player, playerX, playerY);
@@ -210,7 +237,8 @@
             if (returnValue) {
                 markersArray.splice(markersArrayIndex, 1); //Remove this marker completely from markersArray as it have been "eaten"
                 addOneMarker(obj.type); //Add a new one of same type
-                ctx.putImageData(blackImage, obj.x - markerRadius, obj.y - markerRadius); //Make position black of where the marker was
+                ctx.putImageData(blackImageForMarker, obj.x, obj.y); //Make position black of where the marker was
+                flashHit(obj.type);
             }
             return returnValue;
         });
@@ -220,12 +248,21 @@
             if (returnValue) {
                 markersArray.splice(markersArrayIndex, 1); //Remove this marker completely from markersArray as it have been "eaten"
                 addOneMarker(obj.type); //Add a new one of same type
-                ctx.putImageData(blackImage, obj.x - markerRadius, obj.y - markerRadius); //Make position black of where the marker was
+                ctx.putImageData(blackImageForMarker, obj.x, obj.y); //Make position black of where the marker was
+                flashHit(obj.type);
             }
             return returnValue;
         });
         bullHits += bullMarkerHits.length - bullMarkerLoss.length;
         $gameInfo.html('<span class="strong-message">Total hits: ' + bullHits + '!</span>');
+    }
+
+    function flashHit(markerType) {
+        var cssClass = markerType == CONST_UP ? 'bull-flash' : 'bear-flash';
+        $('#main-body').addClass(cssClass).delay(200).queue(function (next) {
+            $(this).removeClass(cssClass);
+            next();
+        });
     }
 
     // Get key press.
@@ -329,7 +366,7 @@
     $(document).ready(function () {
         $canvas = $("#gameCanvas")[0];
         $gameInfo = $('#gameInfo');
-
+        $('#movingMarkerStepValue').val(movingMarkerStepValue);
         initGame();
     });
 </script>
