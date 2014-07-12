@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Bull &amp; Bear Game";
+    ViewBag.Title = "Bull & Bear Game";
 }
 
 <!-- HTML5 IDEA -->
@@ -75,11 +75,13 @@
             initialBackground = blackImageForPlayer;
 
             //
-            ctx.font = "30px Arial";
-            ctx.fillStyle = "red";
-            ctx.fillText("Bull & Bear", (canvasWidth / 2) - (canvasWidth / 6), (canvasHeight / 2) - (canvasHeight / 4));
-            ctx.fillText("by", (canvasWidth / 2) - (canvasWidth / 10), (canvasHeight / 2) - (canvasHeight / 6));
-            ctx.fillText("Per Lundkvist", (canvasWidth / 2) - (canvasWidth / 5), (canvasHeight / 2) - (canvasHeight / 10));
+            ctx.font = "40px Arial";
+            ctx.fillStyle = "#a7100c";
+            ctx.fillText("BULL & BEAR", (canvasWidth / 2) - (canvasWidth / 4), (canvasHeight / 2) - (canvasHeight / 5));
+            ctx.font = "20px Arial";
+            ctx.fillStyle = "#cccccc";
+            ctx.fillText("by", (canvasWidth / 2) - (canvasWidth / 9), (canvasHeight / 2) - (canvasHeight / 10));
+            ctx.fillText("Per Lundkvist ©", (canvasWidth / 2) - (canvasWidth / 6) - 10, (canvasHeight / 2) - (canvasHeight / 20));
 
             setTimeout(initGame, 5000);
         }
