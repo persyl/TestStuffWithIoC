@@ -392,6 +392,9 @@
             //requestAnimFrame(drawIndexCurve);
         };
 
+        //To be used as BullBearGame.onSpeedChange = delegate();
+        this.onSpeedChange = function() {
+        };
 
         //Public methods
         this.initCanvas = function() {
@@ -423,6 +426,11 @@
                 ctx.fillText("Per Lundkvist ©", (canvasWidth / 2) - (canvasWidth / 6) - 10, (canvasHeight / 2) - (canvasHeight / 20));
 
                 setTimeout(initGame, 5000);
+                //Increase game speed gradually
+                setInterval(function () {
+                    self.movingMarkerStepValue++;
+                    self.onSpeedChange();
+                }, 30000);
             }
         };
 
@@ -440,14 +448,13 @@
 
         game.initCanvas();
 
+        game.onSpeedChange = function() {
+            $('#txtMovingMarkerStepValue').val(game.movingMarkerStepValue);
+        };
+
+        //Hack to try to have info inside canvas, but also draggable
         $("#MyColumn2").draggable();
         $('#MyColumn2').attr('style', 'cursor:move;top:5px;left:' + ($('#gameCanvas').width() - 220) + 'px;right:auto;');
-
-        //Increase game speed gradually
-        setInterval(function() {
-            game.movingMarkerStepValue++;
-            $('#txtMovingMarkerStepValue').val(game.movingMarkerStepValue);
-        }, 30000);
     });
 </script>
 
