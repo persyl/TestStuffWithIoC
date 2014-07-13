@@ -30,6 +30,7 @@
     var initialBackground = new Image(); // storage for new background piece
     var oldBack = new Image(); // storage for old background piece
     var player = new Image(); // player
+    var playerCopy = new Image();
     var playerWidthHeight = 30;
     var playerX = 0; // current player position X
     var playerY = 0; // current player position Y
@@ -39,6 +40,8 @@
     var markersArray = [];
     var markerWidthHeight = 20;
     var bullHits = 0;
+    var initialLives = 3; //Start with 3 lives
+    var livesLeft = initialLives;
 
     //Index curve
     var indexPoints = [];
@@ -181,6 +184,28 @@
         drawMarkers();
     };
 
+    var updateLives = function()
+    {
+        ctx.font = "12px Verdana";
+        ctx.fillStyle = "#FFD6D6";
+        ctx.fillText("LIVES LEFT:", canvasWidth - 80 - initialLives * playerWidthHeight, canvasHeight - 8);
+        
+        //Clear lives info
+        for (var z = 1; z <= initialLives; z++) {
+            ctx.putImageData(blackImageForPlayer, canvasWidth - z * playerWidthHeight, canvasHeight - playerWidthHeight);
+        }
+
+        //Update lives info
+        if (livesLeft > 0) {
+            for (z = 1; z <= livesLeft; z++) {
+                ctx.putImageData(playerCopy, canvasWidth - z * playerWidthHeight, canvasHeight - playerWidthHeight);
+            }
+        } else {
+            clearInterval(gameLoop);
+            $gameInfo.append('<br /><span class="strong-message">GAME OVER!</span>');
+        }
+    };
+
     var drawPlayer = function () {
 
         //Draw Bull
@@ -243,6 +268,7 @@
 
         // Save player data.
         player = ctx.getImageData(0, 0, playerWidthHeight, playerWidthHeight);
+        playerCopy = ctx.getImageData(0, 0, playerWidthHeight, playerWidthHeight);
 
         // Erase it for now.
         ctx.putImageData(blackImageForPlayer, 0, 0); //oldBack
@@ -271,6 +297,7 @@
         var bullMarkerLoss = $.grep(markersArray, function (obj, markersArrayIndex) {
             var returnValue = obj.type == CONST_DOWN && isHit(obj, playerX, playerY);
             if (returnValue) {
+                livesLeft--; //Decrease amount of lives left!
                 markersArray.splice(markersArrayIndex, 1); //Remove this marker completely from markersArray as it have been "eaten"
                 addOneMarker(obj.type); //Add a new one of same type
                 ctx.putImageData(blackImageForMarker, obj.x, obj.y); //Make position black of where the marker was
@@ -280,6 +307,8 @@
         });
         bullHits += bullMarkerHits.length - bullMarkerLoss.length;
         $gameInfo.html('<span class="strong-message">Total hits: ' + bullHits + '!</span>');
+
+        updateLives();
     };
 
     var isHit = function (markerObj, playerXpos, playerYpos) {
