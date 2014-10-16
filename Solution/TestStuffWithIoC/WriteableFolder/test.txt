@@ -1,1 +1,1 @@
-2014-07-12 14:36:13 This file is written from application TestStuffWithIoC in a separate thread.
+2014-10-14 20:29:52 This file is written from application TestStuffWithIoC in a separate thread.
