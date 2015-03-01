@@ -1,0 +1,112 @@
+﻿@using TestStuffWithIoC.DeviceDetection
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>DeviceDetect</title>
+</head>
+<body>
+    <div>
+        <h1>Welcome to the Mobile Home Page</h1>
+        
+        @try
+        {
+            var version = System.Runtime.InteropServices.RuntimeEnvironment.GetSystemVersion();
+            if (version.StartsWith("v2"))
+            {
+                <p style="color: Red;">
+                    <b>
+                        IMPORTANT: The NuGet version of 51Degrees.mobi requires .NET v4 or greater to run automatically.
+                        Please change your project to run under .NET v4 then uninstall and reinstall the 51Degrees.mobi NuGet package.
+                        See the <a href="http://51degrees.com/Support/Documentation/NET">User Guide</a> for more information.
+                    </b>
+                </p>
+            }
+        }
+        catch
+        {
+            
+        }
+        
+        <hr />
+        @if (Request.Browser.IsMobileDevice == false)
+        {
+            <p>The requesting device isn't a mobile. The page must have been requested directly.</p>
+            <p>Try accessing the web site from a mobile device, or a mobile device emulator. A list of popular mobile emulators can be found <a href="http://51degrees.com/Support/FAQs/MobileEmulators.aspx" title="Mobile Emulators">here</a>.
+            </p>
+        }
+        <hr />
+        <p>Here's some information about the requesting device:</p>
+        <ul>
+            <li><h2>Popular Properties</h2></li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("IsMobile")) : @Request.Browser.IsMobileDevice </li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("ScreenPixelsWidth")) : @Request.Browser.ScreenPixelsWidth</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("ScreenPixelsHeight")) : @Request.Browser.ScreenPixelsHeight</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("ScreenMMWidth")) : @Helper51Degrees.GetPropertyHtml(Request, "ScreenMMWidth")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("ScreenMMHeight")) : @Helper51Degrees.GetPropertyHtml(Request, "ScreenMMHeight")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("ScreenInchesSquare")) : @Helper51Degrees.GetPropertyHtml(Request, "ScreenInchesSquare")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("IsTablet")) : @Helper51Degrees.GetPropertyHtml(Request, "IsTablet")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("IsSmartPhone")) : @Helper51Degrees.GetPropertyHtml(Request, "IsSmartPhone")</li>
+            <li><h2>Browser Properties</h2></li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("LayoutEngine")) : @Helper51Degrees.GetPropertyHtml(Request, "LayoutEngine")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("AnimationTiming")) : @Helper51Degrees.GetPropertyHtml(Request, "AnimationTiming")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("BlobBuilder")) : @Helper51Degrees.GetPropertyHtml(Request, "BlobBuilder")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("CssBackground")) : @Helper51Degrees.GetPropertyHtml(Request, "CssBackground")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("CssBorderImage")) : @Helper51Degrees.GetPropertyHtml(Request, "CssBorderImage")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("CssCanvas")) : @Helper51Degrees.GetPropertyHtml(Request, "CssCanvas")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("CssColor")) : @Helper51Degrees.GetPropertyHtml(Request, "CssColor")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("CssColumn")) : @Helper51Degrees.GetPropertyHtml(Request, "CssColumn")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("CssFlexbox")) : @Helper51Degrees.GetPropertyHtml(Request, "CssFlexbox")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("CssFont")) : @Helper51Degrees.GetPropertyHtml(Request, "CssFont")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("CssMediaQueries")) : @Helper51Degrees.GetPropertyHtml(Request, "CssMediaQueries")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("CssMinMax")) : @Helper51Degrees.GetPropertyHtml(Request, "CssMinMax")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("CssOverflow")) : @Helper51Degrees.GetPropertyHtml(Request, "CssOverflow")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("CssPosition")) : @Helper51Degrees.GetPropertyHtml(Request, "CssPosition")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("CssText")) : @Helper51Degrees.GetPropertyHtml(Request, "CssText")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("CssTransforms")) : @Helper51Degrees.GetPropertyHtml(Request, "CssTransforms")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("CssTransitions")) : @Helper51Degrees.GetPropertyHtml(Request, "CssTransitions")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("CssUI")) : @Helper51Degrees.GetPropertyHtml(Request, "CssUI")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("DataSet")) : @Helper51Degrees.GetPropertyHtml(Request, "DataSet")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("DataUrl")) : @Helper51Degrees.GetPropertyHtml(Request, "DataUrl")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("DeviceOrientation")) : @Helper51Degrees.GetPropertyHtml(Request, "DeviceOrientation")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("FileReader")) : @Helper51Degrees.GetPropertyHtml(Request, "FileReader")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("FileSaver")) : @Helper51Degrees.GetPropertyHtml(Request, "FileSaver")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("FileWriter")) : @Helper51Degrees.GetPropertyHtml(Request, "FileWriter")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("FormData")) : @Helper51Degrees.GetPropertyHtml(Request, "FormData")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("Fullscreen")) : @Helper51Degrees.GetPropertyHtml(Request, "Fullscreen")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("GeoLocation")) : @Helper51Degrees.GetPropertyHtml(Request, "GeoLocation")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("History")) : @Helper51Degrees.GetPropertyHtml(Request, "History")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("Html-Media-Capture")) : @Helper51Degrees.GetPropertyHtml(Request, "Html-Media-Capture")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("Iframe")) : @Helper51Degrees.GetPropertyHtml(Request, "Iframe")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("IndexedDB")) : @Helper51Degrees.GetPropertyHtml(Request, "IndexedDB")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("Json")) : @Helper51Degrees.GetPropertyHtml(Request, "Json")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("Masking")) : @Helper51Degrees.GetPropertyHtml(Request, "Masking")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("PostMessage")) : @Helper51Degrees.GetPropertyHtml(Request, "PostMessage")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("Progress")) : @Helper51Degrees.GetPropertyHtml(Request, "Progress")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("Prompts")) : @Helper51Degrees.GetPropertyHtml(Request, "Prompts")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("Selector")) : @Helper51Degrees.GetPropertyHtml(Request, "Selector")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("Svg")) : @Helper51Degrees.GetPropertyHtml(Request, "Svg")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("TouchEvents")) : @Helper51Degrees.GetPropertyHtml(Request, "TouchEvents")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("Track")) : @Helper51Degrees.GetPropertyHtml(Request, "Track")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("Video")) : @Helper51Degrees.GetPropertyHtml(Request, "Video")</li>
+            <li>@Html.Raw(Helper51Degrees.GetPropertyLinkHtml("Viewport")) : @Helper51Degrees.GetPropertyHtml(Request, "Viewport")</li>
+        </ul>
+        <hr />
+        <h2>Device Data Information</h2>
+        <p>Data Published: @FiftyOne.Foundation.Mobile.Detection.WebProvider.ActiveProvider.DataSet.Published</p>
+        <p>Version Name: @FiftyOne.Foundation.Mobile.Detection.WebProvider.ActiveProvider.DataSet.Name</p>
+        <p>Version Format: @FiftyOne.Foundation.Mobile.Detection.WebProvider.ActiveProvider.DataSet.Format</p>
+        <hr />
+        <p>See <a href="http://msdn.microsoft.com/en-us/library/system.web.httpbrowsercapabilities_properties.aspx" title="MSDN HttpBrowserCapabilities Documentation">MSDN</a> for details of Request.Browser properties.</p>
+        <p>See <a href="http://51degrees.com/Support/Documentation/NET" title="51Degrees Documentation">51Degrees</a> for user guide.</p>
+        <p>See <a href="http://51degrees.com/Products/Device-Detection" title="51Degrees Device Data">51Degrees Device Data Updates</a> for ways to automatically update device data and extend properties.</p>
+        <p>See <a href="http://51degrees.com/Resources/Property-Dictionary" title="51Degrees Available Properties">51Degrees Device Properties</a> for a full list of properties.</p>
+    </div>
+</body>
+</html>

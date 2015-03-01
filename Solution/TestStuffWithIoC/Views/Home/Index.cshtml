@@ -7,6 +7,17 @@
 <h2>@ViewBag.Title</h2>
 <p>This MVC5-site is built in Visual Studio 2013 Update 2 (.Net 4.5) <b>"TestStuffWithIoC"</b>.</p>
 
+ @if (Request.Browser.IsMobileDevice == false)
+ {
+     <p>You're not using a mobile device (check done with 51Degrees).</p>
+ }
+ else
+ {
+    <p>You're using a mobile device (check done with 51Degrees).</p>
+ }
+ 
+
+
 <ul>
     <li>Using dependency injection with <b>StructureMap MVC4</b>, as I couldn't get it up and running with MVC5-version.</li>    
     <li>Using <b>LESS</b> for the CSS-files.</li>

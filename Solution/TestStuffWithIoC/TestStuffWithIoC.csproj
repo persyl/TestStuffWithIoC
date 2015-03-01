@@ -234,8 +234,8 @@
     <None Include="Properties\PublishProfiles\persyl2 - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\persyl2 - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\persyl2 - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\persyl2.pubxml" />
     <None Include="Scripts\jquery-2.1.1.intellisense.js" />
-    <Content Include="Mobile\Default.aspx" />
     <Content Include="Scripts\jquery-2.1.1.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\jquery-ui-1.10.4.js" />
@@ -266,10 +266,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\ISomeMessage.cs" />
-    <Compile Include="Mobile\Default.aspx.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
+    <Compile Include="DeviceDetection\51DegreesHelper.cs" />
     <Compile Include="Models\ApiCaller\ApiCallerViewModel.cs" />
     <Compile Include="Models\ApiCaller\YouTubeVideoResponse.cs" />
     <Compile Include="Models\Eniro\EniroResponse.cs" />
@@ -291,6 +288,7 @@
     <Content Include="Views\ApiCaller\Index.cshtml" />
     <Content Include="Views\Eniro\Index.cshtml" />
     <Content Include="Views\BullBear\Index.cshtml" />
+    <Content Include="Views\Home\DeviceDetect.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
