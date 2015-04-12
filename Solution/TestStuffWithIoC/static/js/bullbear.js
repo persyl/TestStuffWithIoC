@@ -53,14 +53,14 @@
     var indexY = 0;
 
     //Custom objects
-    var Marker = function (x, y, type, fillStyle) {
-        this.x = x;
-        this.y = y;
-        this.prevX = -1;
-        this.prevY = -1;
-        this.fillStyle = fillStyle;
-        this.type = type;
-    }
+	var Marker = function(x, y, type, fillStyle) {
+		this.x = x;
+		this.y = y;
+		this.prevX = -1;
+		this.prevY = -1;
+		this.fillStyle = fillStyle;
+		this.type = type;
+	};
 
     //Public properties
     var self = this;
