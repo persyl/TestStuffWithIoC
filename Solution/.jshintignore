@@ -1,1 +1,3 @@
+TestStuffWithIoC/static/js/dist/**
 TestStuffWithIoC/static/js/jquery.ui.touch-punch.min.js
+TestStuffWithIoC/static/js/vendor/**

@@ -8,6 +8,9 @@
 test.html
 /Solution/*.suo
 /Solution/*.user
+/Solution/node_modules
+/Solution/TestStuffWithIoC/static/js/dist
+/Solution/TestStuffWithIoC/static/js/vendor
 /Solution/TestStuffWithIoC/bin
 /Solution/TestStuffWithIoC/obj
 /Solution/UnitTests/bin
