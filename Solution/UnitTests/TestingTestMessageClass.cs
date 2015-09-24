@@ -1,18 +1,15 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestStuffWithIoC.Models;
-
+﻿using TestStuffWithIoC.Models;
+using Xunit;
 
 namespace UnitTests
 {
-    [TestClass]
     public class TestingTestMessageClass
     {
-        [TestMethod]
+        [Fact]
         public void Test_UserMessage_Returning_Correct_String()
         {
             var sut = new TestMessage();
-            Assert.AreEqual("This is a message from the injected class TestMessage()", sut.UserMessage());
+            Assert.Equal("This is a message from the injected class TestMessage()", sut.UserMessage());
         }
     }
 }
